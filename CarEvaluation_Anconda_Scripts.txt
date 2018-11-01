@@ -1,0 +1,118 @@
+#import numpy, pandas and sklearn train_test_split, DecisionTreeClassifier & accuracy_score modules
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+from sklearn import tree
+
+#import data into pandas dataframe (in this case dataframe is car_data) using Pandas read_csv() method
+
+path_to_file = 'C:/Users/bikash/Desktop/car_evaluation_data.csv'
+car_data = pd.read_csv(path_to_file,sep=',',header=0)
+
+
+#check the length (number of rows) of dataframe:car_data  
+
+print ("Dataset Length:: ", len(car_data))
+
+
+#check the length & dimensions (number of columns) of dataframe:car_data
+
+print ("Dataset Shape:: ", car_data.shape)  
+
+
+# print top 5 rows of dataframe:car_data
+
+print("Dataset:: ")
+car_data.head()
+
+
+#dataset slicing (divide data into features set & target set)
+
+features = car_data[['buying_price', 'maintenance_price', 'num_doors', 'persons_capacity', 'lugg_boot_size', 'car_safety']].values
+
+target = car_data['result'].values
+
+
+# split data into training set and test set in the ratio of 70:30
+
+features_train, features_test, target_train, target_test = train_test_split( features, target, test_size = 0.3)
+
+
+# build Decision Tree Classifier with criterion gini index and max_depth = 4
+
+clf = tree.DecisionTreeClassifier(max_depth = 4)
+clf = clf.fit(features_train, target_train)
+
+
+# visulize the tree using graphviz
+
+import graphviz 
+dot_data = tree.export_graphviz(clf, out_file=None) 
+graph = graphviz.Source(dot_data) 
+graph.render("cardata") 
+
+
+dot_data = tree.export_graphviz(clf, out_file=None, 
+                         feature_names=['buying_price', 'maintenance_price', 'num_doors', 'persons_capacity', 'lugg_boot_size', 'car_safety'],  
+                         class_names= car_data['result'].values,  
+                         filled=True, rounded=True,  
+                         special_characters=True)  
+graph = graphviz.Source(dot_data)  
+graph 
+
+# build Decision Tree Classifier with criterion gini index
+
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(features_train, target_train)
+
+# visulize the tree using graphviz
+
+import graphviz 
+dot_data = tree.export_graphviz(clf, out_file=None) 
+graph = graphviz.Source(dot_data) 
+graph.render("cardata") 
+
+
+dot_data = tree.export_graphviz(clf, out_file=None, 
+                         feature_names=['buying_price', 'maintenance_price', 'num_doors', 'persons_capacity', 'lugg_boot_size', 'car_safety'],  
+                         class_names= car_data['result'].values,  
+                         filled=True, rounded=True,  
+                         special_characters=True)  
+graph = graphviz.Source(dot_data)  
+graph 
+
+# predict classes for test set and print the predicted classes
+
+target_predict = clf.predict(features_test)
+target_predict
+
+# predict class for the following randomly selected test set
+  
+clf.predict([[4, 2, 3, 3, 2, 3]])		#(for which class = vgood)
+
+# predict class for the following randomly selected test set
+
+clf.predict([[3, 4, 3, 2, 1, 3]])		#(for which class = good)
+
+# predict class for the following randomly selected test set
+
+clf.predict([[3, 3, 3, 3, 2, 2]])		#(for which class = acc)
+
+# predict class for the following randomly selected test set
+
+clf.predict([[3, 3, 4, 2, 2, 1]])		#(for which class = unacc)
+
+
+# calculate accuracy score for Decision Tree classifier with criterion as gini index
+
+print ("Accuracy is ", accuracy_score(target_test,target_predict)*100)
+
+
+
+.............................................................................................
+
+
+
